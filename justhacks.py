@@ -7,6 +7,7 @@ from io import StringIO
 from datetime import datetime
 import pandas as pd
 import zipfile
+from pandas import json_normalize
 
 #chunk huge dataframes
 def chunk_d(filename,df,FILE_CHUNK_SIZE):
@@ -38,4 +39,10 @@ def split_json(jsontxt,sales_file):
         i= i+1
     return json_chunk_list            
 
-
+#load big Json Files
+filename = r"""C:\source\data\processed\retailers-in-category-in-centre-no-filter.json\retailers-in-category-in-centre-no-filter.json"""
+f = open(filename) # open the json file
+data = json.load(f) # load as json
+f.close()
+sales_df_cat = json_normalize(data) #load json into dataframe
+sales_df_cat.to_csv(r"""C:\source\data\sales_nofilter_cat_df.csv""",index=False)
