@@ -1,30 +1,17 @@
-import pyzipper
-from Crypto.Cipher import DES3
-from Crypto.Random import get_random_bytes
+import subprocess
 
-secret_password = b'lost art of keeping a secret'
+#Can be passed as parameters
+secret_password = 'L@unceston20' 
+file_name = "ziptest.zip"
+out_file_name = 'ziptest.txt'
+##################################
 
-with pyzipper.AESZipFile('new_test.zip',
-                         'w',
-                         compression=pyzipper.ZIP_LZMA,
-                         encryption=pyzipper.WZ_AES) as zf:
-    zf.setpassword(secret_password)
-    zf.writestr('test.txt', "What ever you do, don't tell anyone!")
-
-with pyzipper.AESZipFile('new_test.zip') as zf:
-    zf.setpassword(secret_password)
-    my_secrets = zf.read('test.txt')
-
-
-while True:
-    try:
-        key = DES3.adjust_key_parity(get_random_bytes(24))
-        break
-    except ValueError:
-         pass
-
-
-cipher = DES3.new(key, DES3.MODE_CFB)
-plaintext = b'We are no longer the knights who say ni!'
-msg = cipher.iv + cipher.encrypt(plaintext)
-print(msg)
+try:
+    command = ["7z","x", "-aoa", "-p" + secret_password, file_name]
+    rc = subprocess.call(command,stdout=subprocess.DEVNULL)
+    with open(out_file_name,'r') as f:
+        print(f.read())
+    f.close
+except:
+    print(" Error Reading file")
+    
